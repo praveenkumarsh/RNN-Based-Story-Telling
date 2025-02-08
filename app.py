@@ -20,9 +20,9 @@ import boto3
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print("Device:", device)
-print("Torch version:", torch.__version__)
-print("Streamlit version:", st.__version__)
-print("Transformers version:", transformers.__version__)
+# print("Torch version:", torch.__version__)
+# print("Streamlit version:", st.__version__)
+# print("Transformers version:", transformers.__version__)
 
 # Function to download files from S3
 def download_from_s3(bucket_name, s3_key, local_path):
