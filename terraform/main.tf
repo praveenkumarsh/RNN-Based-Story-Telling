@@ -21,3 +21,20 @@ module "ecs_cluster" {
   region       = var.region
   cluster_name = var.cluster_name
 }
+
+module "ecs_task_definition" {
+  source = "./modules/ecs-task-definition"
+  region       = var.region
+}
+
+module "ecs_service" {
+  source            = "./modules/ecs-service"
+  region            = var.region
+  service_name      = var.service_name
+  cluster_id        = module.ecs_cluster.cluster_id
+  desired_count     = var.desired_count
+  container_name    = var.container_name
+  container_port    = var.container_port
+  task_definition   = module.ecs_task_definition.ecs_task_definition_arn
+
+}
