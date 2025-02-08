@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 80
 
 # Run the Streamlit app on port 80
-CMD ["streamlit", "run", "app.py", "--server.port=80", "--server.enableCORS=false"]
+CMD ["STREAMLIT_EMAIL_ADDRESS=''", "streamlit", "run", "app.py", "--server.port=80", "--server.enableCORS=false"]
