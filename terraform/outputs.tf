@@ -11,3 +11,14 @@ output "security_group_id" {
   value = module.security_group.security_group_id
 }
 
+resource "aws_ecs_cluster" "main" {
+  name = var.cluster_name
+}
+
+output "cluster_arn" {
+  value = aws_ecs_cluster.main.arn
+}
+
+output "cluster_name" {
+  value = aws_ecs_cluster.main.name
+}

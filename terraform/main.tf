@@ -16,14 +16,8 @@ module "security_group" {
   vpc_id     = module.vpc.vpc_id
 }
 
-resource "aws_ecs_cluster" "main" {
-  name = var.cluster_name
-}
-
-output "cluster_arn" {
-  value = aws_ecs_cluster.main.arn
-}
-
-output "cluster_name" {
-  value = aws_ecs_cluster.main.name
+module "ecs_cluster" {
+  source       = "./modules/ecs-cluster"
+  region       = var.region
+  cluster_name = var.cluster_name
 }
