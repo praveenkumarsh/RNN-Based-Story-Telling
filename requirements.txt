@@ -1,1 +1,6 @@
 streamlit
+torch
+Pillow
+torchvision
+transformers
+numpy
