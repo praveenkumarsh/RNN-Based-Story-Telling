@@ -1,0 +1,27 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v2
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: 'Terraform Init'
+        run: terraform init
+
+      - name: 'Terraform Plan'
+        run: terraform plan
+
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve
