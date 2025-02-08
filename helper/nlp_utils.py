@@ -1,4 +1,4 @@
-from nltk.translate.bleu_score import corpus_bleu
+# from nltk.translate.bleu_score import corpus_bleu
 
 
 def clean_sentence(output, idx2word):
@@ -16,14 +16,14 @@ def clean_sentence(output, idx2word):
     return sentence
 
 
-def bleu_score(true_sentences, predicted_sentences):
-    hypotheses = []
-    references = []
-    for img_id in set(true_sentences.keys()).intersection(
-        set(predicted_sentences.keys())
-    ):
-        img_refs = [cap.split() for cap in true_sentences[img_id]]
-        references.append(img_refs)
-        hypotheses.append(predicted_sentences[img_id][0].strip().split())
+# def bleu_score(true_sentences, predicted_sentences):
+#     hypotheses = []
+#     references = []
+#     for img_id in set(true_sentences.keys()).intersection(
+#         set(predicted_sentences.keys())
+#     ):
+#         img_refs = [cap.split() for cap in true_sentences[img_id]]
+#         references.append(img_refs)
+#         hypotheses.append(predicted_sentences[img_id][0].strip().split())
 
-    return corpus_bleu(references, hypotheses)
+#     return corpus_bleu(references, hypotheses)
