@@ -4,26 +4,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  # terraform:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
+  #     - name: Set up Terraform
+  #       uses: hashicorp/setup-terraform@v1
+  #       with:
+  #         terraform_version: 1.0.0
 
-      - name: Initialize Terraform
-        run: terraform init
+  #     - name: Initialize Terraform
+  #       run: terraform init
 
-      - name: Apply Terraform
-        run: terraform apply -auto-approve
+  #     - name: Apply Terraform
+  #       run: terraform apply -auto-approve
 
   build_docker_image:
     runs-on: ubuntu-latest
-    needs: terraform
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
