@@ -15,43 +15,16 @@ import random
 import torch.nn as nn
 import torch.optim as optim
 import boto3
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 print("======Server is running======")
 # Define device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-s3 = boto3.client('s3')
-
-# Function to download files from S3
-def download_from_s3(bucket_name, s3_key, local_path):
-    print(f"Downloading {s3_key} from {bucket_name} to {local_path}")
-    s3.download_file(bucket_name, s3_key, local_path)
-
-# S3 bucket details
-bucket_name = "story-generate-rnn"
-vocab_s3_key = "data/vocab.pkl"
-encoder_s3_key = "models/encoder.pkl"
-decoder_s3_key = "models/decoder.pkl"
-
-# Local paths
 vocab_local_path = "data/vocab.pkl"
 encoder_local_path = "models/encoder.pkl"
 decoder_local_path = "models/decoder.pkl"
-
-os.makedirs(os.path.dirname(encoder_local_path), exist_ok=True)
-os.makedirs(os.path.dirname(decoder_local_path), exist_ok=True)
-os.makedirs(os.path.dirname(vocab_local_path), exist_ok=True)
-
-
-# Download files from S3 if they do not exist locally
-if not os.path.exists(vocab_local_path):
-    download_from_s3(bucket_name, vocab_s3_key, vocab_local_path)
-
-if not os.path.exists(encoder_local_path):
-    download_from_s3(bucket_name, encoder_s3_key, encoder_local_path)
-
-if not os.path.exists(decoder_local_path):
-    download_from_s3(bucket_name, decoder_s3_key, decoder_local_path)
+story_model_local_path = "models/fine_tuned_gpt2"
 
 # Initialize encoder and decoder models
 embed_size = 256
@@ -72,6 +45,26 @@ encoder.to(device)
 decoder.to(device)
 encoder.eval()
 decoder.eval()
+story_tokenizer = GPT2Tokenizer.from_pretrained(story_model_local_path)
+story_model = GPT2LMHeadModel.from_pretrained(story_model_local_path)
+# Ensure model is in evaluation mode
+story_model.eval()
+
+def generate_story(keywords, max_length=200):
+    prompt = f"Keywords: {keywords}\nStory:"
+    input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)  # Move to model's device
+    output = story_model.generate(
+        input_ids=input_ids,
+        max_length=max_length,
+        num_return_sequences=1,
+        temperature=0.9,
+        top_p=0.9,
+        top_k=50,
+        pad_token_id=tokenizer.pad_token_id,
+        eos_token_id=tokenizer.eos_token_id,
+        do_sample=True
+    )
+    return tokenizer.decode(output[0], skip_special_tokens=True)
 
 # Define image preprocessing
 transform_test = transforms.Compose([
@@ -276,3 +269,12 @@ if uploaded_files:
             for idx, caption_item in enumerate(optimized_captions):
                 col = cols[idx % 3]
                 col.image(caption_item["image_path"], caption=caption_item["caption"], use_container_width=True)
+            
+            # Extract captions from optimized_captions
+            optimized_captions_text = [item["caption"] for item in optimized_captions]
+            optimized_captions_text_str = ", ".join(optimized_captions_text)
+            story = generate_story(optimized_captions_text_str)
+            print("=====optimized_captions_text=====", optimized_captions_text_str)
+            print("=====Story=====", story)
+            st.subheader("Generated Story")
+            st.write(story)
