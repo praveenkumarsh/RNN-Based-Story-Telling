@@ -17,10 +17,14 @@ import torch.optim as optim
 import boto3
 
 print("======Server is running======")
+# Define device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+s3 = boto3.client('s3')
 
 # Function to download files from S3
 def download_from_s3(bucket_name, s3_key, local_path):
-    s3 = boto3.client('s3')
+    print(f"Downloading {s3_key} from {bucket_name} to {local_path}")
     s3.download_file(bucket_name, s3_key, local_path)
 
 # S3 bucket details
@@ -30,9 +34,14 @@ encoder_s3_key = "models/encoder.pkl"
 decoder_s3_key = "models/decoder.pkl"
 
 # Local paths
-vocab_local_path = "./data/vocab.pkl"
-encoder_local_path = "./models/encoder.pkl"
-decoder_local_path = "./models/decoder.pkl"
+vocab_local_path = "data/vocab.pkl"
+encoder_local_path = "models/encoder.pkl"
+decoder_local_path = "models/decoder.pkl"
+
+os.makedirs(os.path.dirname(encoder_local_path), exist_ok=True)
+os.makedirs(os.path.dirname(decoder_local_path), exist_ok=True)
+os.makedirs(os.path.dirname(vocab_local_path), exist_ok=True)
+
 
 # Download files from S3 if they do not exist locally
 if not os.path.exists(vocab_local_path):
