@@ -16,13 +16,7 @@ import torch.nn as nn
 import torch.optim as optim
 import boto3
 
-# Define device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-print("Device:", device)
-# print("Torch version:", torch.__version__)
-# print("Streamlit version:", st.__version__)
-# print("Transformers version:", transformers.__version__)
+print("======Server is running======")
 
 # Function to download files from S3
 def download_from_s3(bucket_name, s3_key, local_path):
