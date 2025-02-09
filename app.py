@@ -52,19 +52,19 @@ story_model.eval()
 
 def generate_story(keywords, max_length=200):
     prompt = f"Keywords: {keywords}\nStory:"
-    input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)  # Move to model's device
+    input_ids = story_tokenizer.encode(prompt, return_tensors="pt").to(model.device)  # Move to model's device
     output = story_model.generate(
         input_ids=input_ids,
         max_length=max_length,
         num_return_sequences=1,
-        temperature=0.9,
+        temperature=0.1,
         top_p=0.9,
         top_k=50,
-        pad_token_id=tokenizer.pad_token_id,
-        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=story_tokenizer.pad_token_id,
+        eos_token_id=story_tokenizer.eos_token_id,
         do_sample=True
     )
-    return tokenizer.decode(output[0], skip_special_tokens=True)
+    return story_tokenizer.decode(output[0], skip_special_tokens=True)
 
 # Define image preprocessing
 transform_test = transforms.Compose([
