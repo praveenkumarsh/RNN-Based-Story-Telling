@@ -16,6 +16,7 @@ import torch.nn as nn
 import torch.optim as optim
 import boto3
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import re
 
 print("======Server is running======")
 # Define device
@@ -57,7 +58,7 @@ def generate_story(keywords, max_length=200):
         input_ids=input_ids,
         max_length=max_length,
         num_return_sequences=1,
-        temperature=0.1,
+        temperature=0.9,
         top_p=0.9,
         top_k=50,
         pad_token_id=story_tokenizer.pad_token_id,
@@ -277,4 +278,10 @@ if uploaded_files:
             print("=====optimized_captions_text=====", optimized_captions_text_str)
             print("=====Story=====", story)
             st.subheader("Generated Story")
-            st.write(story)
+            # Extract Keywords and Story
+            story_match = re.search(r'Story:(.*)', story, re.DOTALL)
+            if story_match:
+                story_text = story_match.group(1).strip()
+                st.write(story_text)
+            else:
+                st.write("Unable to generate story")
