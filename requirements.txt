@@ -4,5 +4,6 @@ Pillow
 torchvision
 transformers
 numpy
+boto3
 nltk
 pycocotools
