@@ -1,19 +1,19 @@
 # from nltk.translate.bleu_score import corpus_bleu
 
 
-def clean_sentence(output, idx2word):
-    sentence = ""
-    for i in output:
-        word = idx2word[i]
-        if i == 0:
-            continue
-        if i == 1:
-            break
-        if i == 18:
-            sentence = sentence + word
-        else:
-            sentence = sentence + " " + word
-    return sentence
+# def clean_sentence(output, idx2word):
+#     sentence = ""
+#     for i in output:
+#         word = idx2word[i]
+#         if i == 0:
+#             continue
+#         if i == 1:
+#             break
+#         if i == 18:
+#             sentence = sentence + word
+#         else:
+#             sentence = sentence + " " + word
+#     return sentence
 
 
 # def bleu_score(true_sentences, predicted_sentences):

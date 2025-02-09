@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from PIL import Image
 from torchvision import transforms
 from helper.model import EncoderCNN, DecoderRNN
-from helper.nlp_utils import clean_sentence
+# from helper.nlp_utils import clean_sentence
 import pickle
 from helper.vocabulary import Vocabulary
 from transformers import AutoTokenizer, AutoModel
@@ -76,6 +76,20 @@ transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
 ])
+
+def clean_sentence(output, idx2word):
+    sentence = ""
+    for i in output:
+        word = idx2word[i]
+        if i == 0:
+            continue
+        if i == 1:
+            break
+        if i == 18:
+            sentence = sentence + word
+        else:
+            sentence = sentence + " " + word
+    return sentence
 
 # Function to generate captions
 def generate_caption(image_path):
