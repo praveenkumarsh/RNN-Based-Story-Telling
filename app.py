@@ -26,6 +26,7 @@ vocab_local_path = "data/vocab.pkl"
 encoder_local_path = "models/encoder.pkl"
 decoder_local_path = "models/decoder.pkl"
 story_model_local_path = "models/fine_tuned_gpt2"
+story_model_local_path_new = "models/fine_tuned_gpt2_new"
 
 # Initialize encoder and decoder models
 embed_size = 256
@@ -51,6 +52,13 @@ story_model = GPT2LMHeadModel.from_pretrained(story_model_local_path)
 # Ensure model is in evaluation mode
 story_model.eval()
 
+# Load the fine-tuned model and tokenizer
+
+story_tokenizer2 = GPT2Tokenizer.from_pretrained(story_model_local_path_new)
+story_model2 = GPT2LMHeadModel.from_pretrained(story_model_local_path_new)
+# Ensure model is in evaluation mode
+story_model2.eval()
+
 def generate_story(keywords, max_length=200):
     prompt = f"Keywords: {keywords}\nStory:"
     input_ids = story_tokenizer.encode(prompt, return_tensors="pt").to(model.device)  # Move to model's device
@@ -66,6 +74,22 @@ def generate_story(keywords, max_length=200):
         do_sample=True
     )
     return story_tokenizer.decode(output[0], skip_special_tokens=True)
+
+def generate_story2(keywords):
+    prompt = f"<|keywords|>{keywords}<|story|>"
+    input_ids = story_tokenizer2.encode(prompt, return_tensors="pt")
+    output = story_model2.generate(
+        input_ids,
+        max_length=300,
+        do_sample=True,
+        temperature=0.9,
+        top_p=0.92,
+        repetition_penalty=1.2,
+        pad_token_id=story_tokenizer2.eos_token_id
+    )
+    story = story_tokenizer2.decode(output[0], skip_special_tokens=False)
+    story = story.split("<|story|>")[1].replace("<|endoftext|>", "").strip()
+    return story
 
 # Define image preprocessing
 transform_test = transforms.Compose([
@@ -285,3 +309,25 @@ if uploaded_files:
                 st.write(story_text)
             else:
                 st.write("Unable to generate story")
+
+            st.subheader("Generated Story 2")
+            story = generate_story2(optimized_captions_text_str)
+            print("=====optimized_captions_text=====", optimized_captions_text_str)
+            print("=====Story=====", story)
+            # st.subheader("Generated Story")
+            st.write(story)
+
+    # def regenerate_story():
+    #     global optimized_captions_text_str
+    #     story = generate_story(optimized_captions_text_str)
+    #     st.session_state.story_text = story
+
+    # # Streamlit app
+    # st.title("Image Captioning and Sequence Optimization")
+
+    # if "story_text" not in st.session_state:
+    #     st.session_state.story_text = ""
+
+    # st.subheader("Generated Story")
+    # st.write(st.session_state.story_text)
+    # st.button("Regenerate Story", on_click=regenerate_story)
