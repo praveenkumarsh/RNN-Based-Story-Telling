@@ -315,6 +315,7 @@ if uploaded_files:
             print("=====optimized_captions_text=====", optimized_captions_text_str)
             print("=====Story=====", story)
             # st.subheader("Generated Story")
+            
             st.write(story)
 
     # def regenerate_story():
