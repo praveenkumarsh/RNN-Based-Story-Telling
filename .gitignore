@@ -1,6 +1,7 @@
-terraform/.terraform
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
-terraform/.terraform.lock.hcl
-models/
-data/
+Terraform/.terraform
+Terraform/terraform.tfstate
+Terraform/terraform.tfstate.backup
+Terraform/.terraform.lock.hcl
+ProjectCode/storymodels/
+ProjectCode/storydata/
+*.pyc
