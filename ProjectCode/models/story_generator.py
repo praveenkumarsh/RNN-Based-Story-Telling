@@ -1,5 +1,6 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
+import re
 
 class StoryGenerator:
     def __init__(self, model_path):
@@ -21,11 +22,12 @@ class StoryGenerator:
             temperature=0.9,
             top_p=0.9,
             top_k=50,
-            pad_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.pad_token_id,
             eos_token_id=self.tokenizer.eos_token_id,
             do_sample=True
         )
-        return self.tokenizer.decode(output[0], skip_special_tokens=True)
+        story = self.tokenizer.decode(output[0], skip_special_tokens=True)
+        return re.search(r'Story:(.*)', story, re.DOTALL).group(1).strip()
 
 class NewStoryGenerator(StoryGenerator):
     def generate(self, keywords, max_length=300):
