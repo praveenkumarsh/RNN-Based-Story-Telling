@@ -6,3 +6,6 @@ MODEL_PARAMS = {
     "hidden_size": 512,
     "vocab_threshold": 5,
 }
+# Add constants
+MAX_FILE_SIZE_MB = 10
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
