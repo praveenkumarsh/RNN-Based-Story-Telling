@@ -7,3 +7,4 @@ numpy
 boto3
 nltk
 pycocotools
+ultralytics

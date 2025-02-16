@@ -4,6 +4,8 @@ import torch
 class StoryGenerator:
     def __init__(self, model_path):
         self.tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = GPT2LMHeadModel.from_pretrained(model_path)
         self.model.eval()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,7 +21,7 @@ class StoryGenerator:
             temperature=0.9,
             top_p=0.9,
             top_k=50,
-            pad_token_id=self.tokenizer.pad_token_id,
+            pad_token_id=self.tokenizer.eos_token_id,
             eos_token_id=self.tokenizer.eos_token_id,
             do_sample=True
         )
@@ -35,7 +37,8 @@ class NewStoryGenerator(StoryGenerator):
             temperature=0.9,
             top_p=0.92,
             repetition_penalty=1.2,
-            pad_token_id=self.tokenizer.eos_token_id
+            pad_token_id=self.tokenizer.eos_token_id,
+            do_sample=True
         )
         story = self.tokenizer.decode(output[0], skip_special_tokens=False)
         return story.split("<|story|>")[1].replace("<|endoftext|>", "").strip()
