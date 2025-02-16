@@ -1,16 +1,19 @@
 import streamlit as st
-import tempfile
 import os
 from utils.vocabulary import Vocabulary
-import re
 
 from utils.nlp_utils import TextEmbedder
 from utils.reinforcement_learning import TextSequenceEnvironment, DQNAgent
 import os
-import warnings
 from models.model_loader import load_models
 from utils.file_processing import process_uploaded_files
 from utils.captioning import generate_captions
+import traceback
+
+st.set_page_config(
+    page_title="RNN Story Generator",
+    page_icon="📖",
+)
 
 session_state = st.session_state
 
@@ -25,6 +28,9 @@ if "model1_story" not in session_state:
 
 if "model2_story" not in session_state:
     session_state.model2_story = ""
+
+if "total_images_count" not in session_state:
+    session_state.total_images_count = 0
 
 UPLOAD_DIR = "uploaded_images/"
 os.makedirs(UPLOAD_DIR, exist_ok=True)  # Ensure directory exists
@@ -43,6 +49,15 @@ def main():
     
     if uploaded_files:
         image_paths = process_uploaded_files(uploaded_files, UPLOAD_DIR)
+
+        if(session_state.total_images_count > 0 and session_state.total_images_count != len(image_paths)):
+            session_state.update(captions=[])
+            session_state.update(optimized_sequence=[])
+            session_state.update(model1_story="")
+            session_state.update(model2_story="")
+            session_state.total_images_count = 0
+        session_state.total_images_count = len(image_paths)
+        print(image_paths)
         
         if not image_paths:
             st.warning("No valid images found in upload")
@@ -107,6 +122,31 @@ def main():
 
         # Display optimized sequence
         st.subheader("Optimized Image Sequence")
+
+                # Create a copy for manipulation
+        optimized_captions = session_state.optimized_sequence.copy()
+        
+        # Display sortable list with manual controls
+        new_order = []
+        for i, item in enumerate(optimized_captions):
+            cols = st.columns([1, 4, 1, 1])
+            with cols[0]:
+                st.image(item["image_path"], use_container_width=True)
+            with cols[1]:
+                st.write(item["caption"])
+            with cols[2]:
+                if st.button("↑", key=f"up_{i}"):
+                    if i > 0:
+                        optimized_captions[i], optimized_captions[i-1] = optimized_captions[i-1], optimized_captions[i]
+                        session_state.optimized_sequence = optimized_captions
+                        st.rerun()
+            with cols[3]:
+                if st.button("↓", key=f"down_{i}"):
+                    if i < len(optimized_captions)-1:
+                        optimized_captions[i], optimized_captions[i+1] = optimized_captions[i+1], optimized_captions[i]
+                        session_state.optimized_sequence = optimized_captions
+                        st.rerun()
+
         cols = st.columns(3)
         for idx, item in enumerate(optimized_captions):
             col = cols[idx % 3]
@@ -149,4 +189,8 @@ def main():
             st.rerun()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+        st.text_area("Debug Info:", traceback.format_exc(), height=150)
