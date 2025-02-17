@@ -17,6 +17,7 @@ st.set_page_config(
 
 session_state = st.session_state
 
+
 if "captions" not in session_state:
     session_state.captions = []
 

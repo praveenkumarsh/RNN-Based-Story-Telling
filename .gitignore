@@ -5,3 +5,4 @@ Terraform/.terraform.lock.hcl
 ProjectCode/storymodels/
 ProjectCode/storydata/
 *.pyc
+ProjectCode/uploaded_images/
