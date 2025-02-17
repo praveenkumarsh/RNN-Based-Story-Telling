@@ -10,7 +10,6 @@ from utils.file_processing import process_uploaded_files
 from utils.captioning import generate_captions
 import traceback
 
-
 st.set_page_config(
     page_title="RNN Story Generator",
     page_icon="📖",
