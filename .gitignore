@@ -2,7 +2,7 @@ Terraform/.terraform
 Terraform/terraform.tfstate
 Terraform/terraform.tfstate.backup
 Terraform/.terraform.lock.hcl
-ProjectCode/storymodels/
-ProjectCode/storydata/
+Application/storymodels/
+Application/storydata/
 *.pyc
-ProjectCode/uploaded_images/
+Application/uploaded_images/
