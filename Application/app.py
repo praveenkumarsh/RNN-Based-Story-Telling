@@ -168,18 +168,18 @@ def main():
         # Sequence optimization
         st.write("Generating Story...")
 
-        if session_state.model1_story == "":
-            model1_story = story_gen1.generate(keywords)
-            session_state.update(model1_story=model1_story)
-        story1 = session_state.model1_story
+        # if session_state.model1_story == "":
+        #     model1_story = story_gen1.generate(keywords)
+        #     session_state.update(model1_story=model1_story)
+        # story1 = session_state.model1_story
 
         if session_state.model2_story == "":
             model2_story = story_gen2.generate(keywords)  
             session_state.update(model2_story=model2_story)                                                   
         story2 = session_state.model2_story
 
-        st.subheader("Generated Story (Model 1)")
-        st.write(story1)
+        # st.subheader("Generated Story (Model 1)")
+        # st.write(story1)
         
         st.subheader("Generated Story (Model 2)")
         st.write(story2)
