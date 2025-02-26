@@ -6,3 +6,4 @@ Application/storymodels/
 Application/storydata/
 *.pyc
 Application/uploaded_images/
+.ipynb_checkpoints/
